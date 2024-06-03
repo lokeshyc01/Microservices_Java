@@ -1,2 +1,4 @@
 https://springframework.guru/spring-profiles                                     spring profiles
 https://www.learninjava.com/spring-webclient-get-post-put-delete-example          webclient crud api
+
+hystrix circuit breaker---> compatibility issues solved using spring cloud documenttation using release trains added spring-cloud-version in pom.xml
