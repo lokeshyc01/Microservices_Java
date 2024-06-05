@@ -1,23 +1,20 @@
 package com.rabbitunicasting.app.config;
 
-
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class RabbitMQDirectExchange {
-	
+public class RabbitMQTopicExchange {
+
 	@Bean
 	Queue financeQueue() {
 		return new Queue("financeQueue",false);
@@ -34,25 +31,34 @@ public class RabbitMQDirectExchange {
 	}
 	
 	@Bean
-	DirectExchange exchange() {
-		return new DirectExchange("direct-exchange");
+	Queue multicastQueue() {
+		return new Queue("multicastQueue",false);
 	}
 	
 	@Bean
-	Binding financeBinding(DirectExchange exchange,Queue financeQueue) {
-		return BindingBuilder.bind(financeQueue).to(exchange).with("finance");
+	TopicExchange exchange() {
+		return new TopicExchange("topic-exchange");
 	}
 	
 	@Bean
-	Binding marketingBinding(DirectExchange exchange,Queue marketingQueue) {
-		return BindingBuilder.bind(marketingQueue).to(exchange).with("marketing");
+	Binding financeBinding(TopicExchange exchange,Queue financeQueue) {
+		return BindingBuilder.bind(financeQueue).to(exchange).with("queue.finance");
 	}
 	
 	@Bean
-	Binding hrBinding(DirectExchange exchange,Queue adminQueue) {
-		return BindingBuilder.bind(adminQueue).to(exchange).with("admin");
+	Binding marketingBinding(TopicExchange exchange,Queue marketingQueue) {
+		return BindingBuilder.bind(marketingQueue).to(exchange).with("queue.marketing");
 	}
-
+	
+	@Bean
+	Binding adminBinding(TopicExchange exchange,Queue adminQueue) {
+		return BindingBuilder.bind(adminQueue).to(exchange).with("queue.admin");
+	}
+	
+	@Bean
+	Binding multicastBinding(TopicExchange exchange,Queue multicastQueue) {
+		return BindingBuilder.bind(multicastQueue).to(exchange).with("queue.*");
+	}
 	
 	@Bean
 	public MessageConverter jsonMessageConverter() {
