@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.resttemplatewebclient.app.dto.Post;
@@ -41,33 +42,32 @@ public class WebClientController {
 	}
 	
 	@GetMapping("/all")
-	public List<Post> getAllPost(){
-		List<Post> posts = webclient.get()
+	public Flux<Post> getAllPost(){
+		Flux<Post> posts = webclient.get()
 							.uri("/posts")
 							.retrieve()
-							.bodyToFlux(Post.class)
-							.collectList()
-							.block();
+							.bodyToFlux(Post.class);
+							
 //		
-//		posts.subscribe(newPost -> System.out.println(newPost));
+		posts.subscribe(newPost -> System.out.println(newPost));
 //		System.out.println("resposen ended");
 		return posts;
 	}
 	
 	@PostMapping("/create")
-	public Post createPost(){
+	public Mono<Post> createPost(){
 		Post post = new Post();
 		post.setUserId(1);
 		post.setBody("testing body");
 		post.setId(101);
 		post.setTitle("testing title");
 		
-	Post newPost = webclient.post()
+	Mono<Post> newPost = webclient.post()
 							.uri("/posts")
-							.body(Mono.just(post),Post.class)
+							.body(BodyInserters.fromValue(post))
 							.retrieve()
-							.bodyToMono(Post.class)
-							.block();
+							.bodyToMono(Post.class);
+							
 	
 		return newPost;
 	}
@@ -83,19 +83,18 @@ public class WebClientController {
 		System.out.println("eleement deleted");
 	}
 	
-	@PutMapping("/put")
-	public Post updatePost(){
+	@PutMapping("/put/{id}")
+	public Mono<Post> updatePost(@PathVariable int id){
 		Post post = new Post();
-		post.setUserId(1);
+		post.setUserId(id);
 		post.setBody("testing body");
 		post.setId(101);
 		post.setTitle("testing title");
 		
-		Post newPost = webclient.put()
-				.uri("/posts")
+		 Mono<Post> newPost = webclient.put()
+				.uri("/posts/{id}",id)
 				.retrieve()
-				.bodyToMono(Post.class)
-				.block();
+				.bodyToMono(Post.class);
 		
 //		newPost.subscribe(newP->System.out.println(newP));
 		return newPost;
