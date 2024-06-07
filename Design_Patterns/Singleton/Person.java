@@ -1,6 +1,16 @@
-public class Person{
-    
-    private Person(){};
+import java.io.Serializable;
+
+public class Person implements Serializable,Cloneable {
+    // solution for reflection api
+    // private Person(){
+    //  if(person != null){
+    //     throw new RuntimeException("trying to break singlton patttern using reflection api");
+    //  }   
+    // }
+
+    private Person(){
+      
+    }
     private static Person person;
     public static Person getPerson(){
 
@@ -21,4 +31,12 @@ public class Person{
         }
         return person;
     }
+
+    public Object clone() throws CloneNotSupportedException{
+        return person;
+    }
+
+    public Object readResolve(){
+        return person;
+    } 
 }
