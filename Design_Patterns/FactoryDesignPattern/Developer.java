@@ -1,0 +1,4 @@
+interface Developer{
+
+    int getSalary();
+}
