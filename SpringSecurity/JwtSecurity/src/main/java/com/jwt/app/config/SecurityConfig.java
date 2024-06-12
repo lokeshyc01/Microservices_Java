@@ -33,12 +33,18 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		log.info("insider filter chain");
+		http.cors(AbstractHttpConfigurer::disable);
+		
 		http.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(request -> request.requestMatchers("/home").permitAll()
-						.requestMatchers("/signup").permitAll()
+				.authorizeHttpRequests(request -> 
+						request.requestMatchers("/signup").permitAll()
 						.requestMatchers("/signin").permitAll()
-						.requestMatchers("/test").hasRole("ADMIN")
-						.requestMatchers("/student").hasRole("STUDENT"))
+						.requestMatchers("/home").permitAll()
+						.requestMatchers("/admin").hasRole("ADMIN")
+						.requestMatchers("/student").hasRole("STUDENT")
+						.anyRequest()
+						.authenticated()
+				)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authencationProvider())
 				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);

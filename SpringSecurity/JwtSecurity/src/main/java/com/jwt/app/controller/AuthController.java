@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,4 +55,21 @@ public class AuthController {
 		return ResponseEntity.ok(token);
 		
 	}
+	
+	@GetMapping("/admin")
+	public String adminRoute() {
+		log.info("Admin Controller");
+		return "Admin specific route";
+	}
+	
+	@GetMapping("/student")
+	public String studentRoute() {
+		log.info("Student controller");
+		return "Student specific route";
+	}
+	@GetMapping("/home")
+	public String openRoute() {
+		return "open to all ";
+	}
+	
 }

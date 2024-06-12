@@ -50,6 +50,9 @@ public class JwtFilter extends OncePerRequestFilter {
 					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					
 					SecurityContextHolder.getContext().setAuthentication(authToken);
+					log.info("Authentication Object =>"+SecurityContextHolder.getContext().getAuthentication().toString());
+	                log.info("Authorities in Context: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities()); // Add this line
+
 					log.info("authentication object placed inside the security context holder");
 				}
 
@@ -58,8 +61,8 @@ public class JwtFilter extends OncePerRequestFilter {
 			}
 		} else {
 			log.info("No Header Found");
-			filterChain.doFilter(request, response);
 		}
+		filterChain.doFilter(request, response);   //add this line outside if_else
 	}
 
 }
