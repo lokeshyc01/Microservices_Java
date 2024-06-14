@@ -7,6 +7,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
+import com.producer.app.dto.Customer;
+
 @Service
 public class KafkaPublisher {
 
@@ -28,5 +30,14 @@ public class KafkaPublisher {
 //		});
 		
 		future.thenAccept(data -> System.out.println(data.getRecordMetadata().offset()));
+	}
+	
+	public void publishMessage(Customer customer)
+	{
+		CompletableFuture<SendResult<String, Object>> future=template.send("random-topic-3",customer);
+		
+		future.thenAccept((data)->{
+			System.out.println(data.getRecordMetadata().offset());
+		});
 	}
 }
