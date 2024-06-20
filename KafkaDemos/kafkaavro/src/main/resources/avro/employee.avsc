@@ -17,17 +17,10 @@
 	"type":"string"
 },
 {
-	"name":"email",
+	"name":"emailId",
 	"type":"string",
 	"default":""
-},
-{
-	"name":"dob",
-	"type":"string"
-},
-{
-	"name":"age",
-	"type":"int"
 }
+
 ]
 }
